@@ -1,5 +1,6 @@
 package gameEngine;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class Stage {
@@ -8,13 +9,13 @@ public class Stage {
 		for (int i=0; i<possibleValues.length; i++){
 			Briefcase temp=new Briefcase(i, possibleValues[i]);
 			briefcases.add(temp);
-			scoreboard.add(possibleValues[i]);
 		}
+		scoreboard.initialize(possibleValues);
 	}
 
 	private ArrayList<Briefcase> briefcases = new ArrayList<Briefcase>();
 	private Briefcase playerCase;
-	public ArrayList<Integer> scoreboard = new ArrayList <Integer>();
+	public Scoreboard scoreboard = new Scoreboard();
 
 	public int chooseBriefcase(int caseNumber){
 		// Find the case
@@ -23,22 +24,21 @@ public class Stage {
 		if (!briefcases.get(caseLocation).getState())	{
 			int value = briefcases.get(caseLocation).openCase();
 			// Remove that case from the scoreboard
-			removeValueFromScoreboard(value);
+			scoreboard.removeValue(value);
 			return value;
 		}
 		else return 0;
 	}
 	
-	public int[] getRemainingCaseNumbers() {
-		ArrayList <Integer> temp = new ArrayList <Integer>();
-		for (int i=0; i<briefcases.size(); i++) {
-			if (!briefcases.get(i).getState()) {
-				temp.add(briefcases.get(i).number);
+	public ArrayList<Integer> getRemainingCaseNumbers() {
+		ArrayList <Integer> caseNums = new ArrayList <Integer>();
+		
+		Iterator<Briefcase> itBC = briefcases.iterator();
+		while (itBC.hasNext()) {
+			Briefcase bc=itBC.next();
+			if (!bc.getState()) {
+				caseNums.add(bc.number);
 			}
-		}
-		int[] caseNums = new int[temp.size()];
-		for (int i=0; i<temp.size(); i++) {
-			caseNums[i]=temp.get(i);
 		}
 		return caseNums;
 	}
@@ -54,36 +54,17 @@ public class Stage {
 	}
 	
 	private int findCase(int caseNumber) {
-		for (int i=0; i<briefcases.size(); i++) {
-			if (briefcases.get(i).number==caseNumber) return i;
+		Iterator<Briefcase> it = briefcases.iterator();
+		int i=0;
+		while (it.hasNext()) {
+			if (it.next().number==caseNumber) return i;
+			else i++;
 		}
 		return -1;
 	}
 	
-	private void removeValueFromScoreboard(int value) {
-		for (int i=0; i<scoreboard.size(); i++) {
-			if (scoreboard.get(i)==value) {
-				scoreboard.remove(i);
-				return;
-			}
-		}
-	}
-	
 	public Briefcase getPlayerCase(){
 		return playerCase;
-	}
-
-	public int getTotalValueScoreboard(){
-		int total = 0;
-		for (int i=0; i<scoreboard.size(); i++)	{
-			total = total + scoreboard.get(i);
-		}
-		return total;
-	}
-
-	public double getAverageValueCases(){
-		int temp=getTotalValueScoreboard();
-		return temp/scoreboard.size();
 	}
 
 }

@@ -16,10 +16,10 @@ public class DefaultPlayer implements Player {
 	}
 
 	@Override
-	public int pickCase(int[] caseNums){
+	public int pickCase(ArrayList<Integer> caseNums){
 		// Just pick a case at random
-		int ind = rand.nextInt(caseNums.length);
-		return caseNums[ind];
+		int ind = rand.nextInt(caseNums.size());
+		return caseNums.get(ind);
 	}
 
 	@Override

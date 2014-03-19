@@ -9,13 +9,9 @@ import interfaceImplementations.DefaultDealer;
 public class Game {
 
 	// Define the possible case values, in dollars
-	@SuppressWarnings("serial")
-	public static ArrayList<Integer> possibleCaseValues=new ArrayList<Integer>() {{
-		add(1); add(2); add(5); add(10); add(25); add(50); add(75); add(100);
-		add(200); add(300); add(400); add(500); add(750); add(1000); add(5000); 
-		add(10000); add(20000); add(50000); add(75000); add(100000); add(200000);
-		add(300000); add(400000); add(500000); add(750000); add(1000000);
-	}};
+	public static int[] possibleCaseValues={1, 2, 5, 10, 25, 50, 75, 
+		100, 200, 300, 400, 500, 750, 100, 5000, 10000, 20000,
+		50000, 75000, 100000, 200000, 300000, 400000, 500000, 750000, 1000000};
 	private static Random rand = new Random();
 
 	public static void main(String[] args){
@@ -65,16 +61,16 @@ public class Game {
 				boolean switchCases=player.switchCases(stage.scoreboard);
 				if (switchCases) {
 					// Open the final case
-					int[] lastNumber = stage.getRemainingCaseNumbers();
-					int value = stage.chooseBriefcase(lastNumber[0]);
+					ArrayList<Integer> lastNumber = stage.getRemainingCaseNumbers();
+					int value = stage.chooseBriefcase(lastNumber.get(0));
 					System.out.printf("Player decided to switch cases. The new briefcase was worth $%,d, while the player's original "
 							+ "briefcase was worth $%,d\n",value,stage.getPlayerCase().openCase());
 				}
 				else
 				{
 					// Open the player's case, and reveal how much the last one would have been worth
-					int[] lastNumber = stage.getRemainingCaseNumbers();
-					int value = stage.chooseBriefcase(lastNumber[0]);
+					ArrayList<Integer> lastNumber = stage.getRemainingCaseNumbers();
+					int value = stage.chooseBriefcase(lastNumber.get(0));
 					System.out.printf("Player decided to keep the original case, which was worth $%,d, while the final case "
 							+ "was worth $%,d\n",stage.getPlayerCase().openCase(),value);
 				}
@@ -101,12 +97,17 @@ public class Game {
 			System.out.printf("  The player opened case %d, which was worth $%,d\n",roundXCases.get(i)+1,values.get(i));
 		}
 	}
-	
-	private static int[] scrambleCases(ArrayList<Integer> originalCaseNums) {
-		int N=originalCaseNums.size();
-		int[] newCaseNums = new int[N];
-		for (int i=0; i<N; i++) {
-			newCaseNums[i]=originalCaseNums.remove(rand.nextInt(originalCaseNums.size()));
+
+	private static int[] scrambleCases(final int[] originalCaseNums) {
+		@SuppressWarnings("serial")
+		ArrayList<Integer> oCN = new ArrayList<Integer>() {{
+			for (int i : originalCaseNums) { 
+				add(i); 
+			}
+		}};
+		int[] newCaseNums = new int[originalCaseNums.length];
+		for (int i=0; i<originalCaseNums.length; i++) {
+			newCaseNums[i]=oCN.remove(rand.nextInt(oCN.size()));
 		}
 		return newCaseNums;
 	}

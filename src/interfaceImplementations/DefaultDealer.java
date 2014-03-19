@@ -6,7 +6,7 @@ import gameEngine.Stage;
 public class DefaultDealer implements Dealer {
 	public int makeOffer(Stage stage){
 		// for now, just offer 5% less than the average value
-		double offer = (double)stage.getAverageValueCases();
+		double offer = stage.scoreboard.averageValue();
 		offer = offer*.95;
 		// Do some quantizing so the numbers look nice
 		double rounder;
